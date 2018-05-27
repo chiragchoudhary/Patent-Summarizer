@@ -132,12 +132,12 @@ def store_vocab(vocab, model):
     """Stores the vocabulary for use during evaluation."""
 
     path = os.path.join(os.getcwd(), model, "{}.vocab".format(model))
-    with open(path) as f:
+    with open(path,"w+") as f:
         pickle.dump(vocab, f, pickle.HIGHEST_PROTOCOL)
 
 
 def load_vocab(model):
     """Loads the vocabulary from file."""
-
-    vocab = pickle.load(os.path.join(os.getcwd(), model, "{}.vocab".format(model)))
+    with open(os.path.join(os.getcwd(), model, "{}.vocab".format(model))) as f:
+        vocab = pickle.load(f)
     return vocab
