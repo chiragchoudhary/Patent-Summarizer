@@ -256,7 +256,7 @@ class RNNModel:
         # batch_loss = 0
         summary_update_loss = []  # Record the update losses for saving improvements in the model
         checkpoint = "{}.ckpt".format(model_name)
-        metafile = '{}.meta'.format(model_name)
+        metafile = checkpoint+'.meta'
         with tf.Session(graph=self.train_graph) as sess:
             sess.run(tf.global_variables_initializer())
 
