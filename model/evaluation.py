@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
-import rouge
+from rouge import Rouge
 import argparse
 
 from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
@@ -12,11 +12,11 @@ from utils.processing import get_titles_and_abstracts, text_to_seq, load_vocab
 def main(model, data, vocab):
     """Evaluates the performance of model on given data."""
 
-    batch_size = 128
+    batch_size = 64
     patent_titles, patent_abstracts = get_titles_and_abstracts(data)
     output_patent_titles = []
     checkpoint = "{}.ckpt".format(model)
-    metafile = '{}.meta'.format(model)
+    metafile = checkpoint+'.meta'
     pad = vocab.word2idx("<PAD>")
     loaded_graph = tf.Graph()
 
@@ -32,17 +32,18 @@ def main(model, data, vocab):
         keep_prob = loaded_graph.get_tensor_by_name('keep_prob:0')
 
         # Multiply by batch_size to match the model's input parameters
-        for i in range(0, len(patent_abstracts)):
+        for i in range(len(patent_abstracts)):
             text = text_to_seq(patent_abstracts[i], vocab.vocab_to_int)
             answer_logits = sess.run(logits, {input_data: [text] * batch_size,
                                               summary_length: [np.random.randint(10, 20)],
                                               text_length: [len(text)] * batch_size,
                                               keep_prob: 1.0})[0]
-            temp = " ".join([vocab.int_to_vocab[i] for i in answer_logits if i != pad])
+            temp = " ".join([vocab.int_to_vocab[j] for j in answer_logits if j != pad])
             output_patent_titles.append(temp)
-            if i % 50 == 0:
-                print("Current iteration: ", i)
+            if (i+1) % 50 == 0:
+                print("Current iteration", i)
 
+    rouge = Rouge()
     scores = rouge.get_scores(patent_titles, output_patent_titles, avg=True)
     print("Rouge score: ", scores)
 
@@ -52,8 +53,7 @@ def main(model, data, vocab):
         patent_titles_list.append([patent_titles[i]])
 
     cc = SmoothingFunction()
-    bleu_score = sentence_bleu(patent_titles_list, output_patent_titles,
-                               smoothing_function=cc.method4())
+    bleu_score = sentence_bleu(patent_titles_list, output_patent_titles, smoothing_function=cc.method4)
     print("BLEU Score:", bleu_score)
 
 
