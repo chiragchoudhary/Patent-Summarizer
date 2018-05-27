@@ -256,12 +256,13 @@ class RNNModel:
         # batch_loss = 0
         summary_update_loss = []  # Record the update losses for saving improvements in the model
         checkpoint = "{}.ckpt".format(model_name)
+        metafile = '{}.meta'.format(model_name)
         with tf.Session(graph=self.train_graph) as sess:
             sess.run(tf.global_variables_initializer())
 
             # If we want to continue training a previous session
             if load:
-                loader = tf.train.import_meta_graph(os.path.join(os.getcwd(), model_name, '{}.meta'.format(model_name)))
+                loader = tf.train.import_meta_graph(os.path.join(os.getcwd(), model_name, metafile))
                 loader.restore(sess, os.path.join(os.getcwd(), model_name, checkpoint))
 
             for epoch_i in range(1, self.epochs + 1):
@@ -303,7 +304,7 @@ class RNNModel:
                             print('New Record!')
                             stop_early = 0
                             saver = tf.train.Saver()
-                            saver.save(sess, os.path.join(os.getcwd(), checkpoint))
+                            saver.save(sess, os.path.join(os.getcwd(), model_name, checkpoint))
 
                         else:
                             print("No Improvement.")

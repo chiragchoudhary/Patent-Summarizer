@@ -16,12 +16,13 @@ def main(model, data, vocab):
     patent_titles, patent_abstracts = get_titles_and_abstracts(data)
     output_patent_titles = []
     checkpoint = "{}.ckpt".format(model)
+    metafile = '{}.meta'.format(model)
     pad = vocab.word2idx("<PAD>")
     loaded_graph = tf.Graph()
 
     with tf.Session(graph=loaded_graph) as sess:
         # Load saved model
-        loader = tf.train.import_meta_graph(os.path.join(os.getcwd(), model, '{}.meta'.format(model)))
+        loader = tf.train.import_meta_graph(os.path.join(os.getcwd(), model, metafile))
         loader.restore(sess, os.path.join(os.getcwd(), model, checkpoint))
 
         input_data = loaded_graph.get_tensor_by_name('input:0')
