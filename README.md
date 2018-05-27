@@ -14,9 +14,16 @@ We used patents whose publication dates were from year 2000 and onwards. This al
 
 ## Running the model
 
-For training a model, we need to specify a name for our model. E.g., with name <i>model_name</i>, run:
+For training a model, we need to specify a name for our model. E.g., with name <i>model-name</i>, run:
 
-  python main.py model_name
+<style background-color="gray"> python main.py model-name </style>
+
+To load a previously saved model, set the load flag in main.py to True. 
 
 ## Evaluate the model
 
+For evaluating a model <i>model-name</i> on given patent dataset <i>data-set</i>, run:
+
+python evaluation.py <i>model-name</i> <i>data-set</i>
+
+The format of dataset files should be similar to the files in /data folder.
