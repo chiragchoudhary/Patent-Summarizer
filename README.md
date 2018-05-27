@@ -16,7 +16,7 @@ We used patents whose publication dates were from year 2000 and onwards. This al
 
 For training a model, we need to specify a name for our model. E.g., with name <i>model-name</i>, run:
 
-<style background-color="gray"> python main.py model-name </style>
+python main.py model-name
 
 To load a previously saved model, set the load flag in main.py to True. 
 
